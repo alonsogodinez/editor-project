@@ -4,9 +4,10 @@
   "workspaces": [
     "apps/*"
   ],
+  "private": true,
   "scripts": {
-    "frontend:dev": "npm run dev -w frontend",
-    "backend:dev": "npm run dev -w backend",
+    "frontend:dev": "yarn workspace  frontend run dev",
+    "backend:dev": "yarn workspace backend run dev",
     "dev": "run-p frontend:dev backend:dev"
   },
   "resolutions": {
