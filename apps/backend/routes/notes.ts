@@ -38,16 +38,20 @@ const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
   })
 }
 
-const noteHandler: WebsocketRequestHandler = (ws, req) => {
-  ws.on('message', () => {
-    switch (req.params.id) {
-      case NOTE_1.id: {
-        return ws.send(JSON.stringify(NOTE_1))
-      }
-      case NOTE_2.id: {
-        return ws.send(JSON.stringify(NOTE_2))
-      }
-    }
+const noteSocketRooms = new Map()
+
+const noteHandler: WebsocketRequestHandler = (client, req) => {
+  if(!noteSocketRooms.has(req.params.id)) {
+    noteSocketRooms.set(req.params.id, new Set())
+  }
+  if(!noteSocketRooms.get(req.params.id).has(client)) {
+    noteSocketRooms.get(req.params.id).add(client)
+  }
+
+  client.on('message', (message) => {
+    noteSocketRooms.get(req.params.id).forEach((client: any) => {
+      client.send(message || JSON.stringify(NOTE_1))
+    })
   })
 }
 
