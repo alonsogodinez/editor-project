@@ -1,6 +1,6 @@
 // @refresh reset // Fixes hot refresh errors in development https://github.com/ianstormtaylor/slate/issues/3477
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, {useCallback, useEffect, useMemo} from 'react'
 import { createEditor, Descendant, BaseEditor } from 'slate'
 import { withHistory, HistoryEditor } from 'slate-history'
 import { handleHotkeys } from './helpers'
@@ -21,18 +21,37 @@ declare module 'slate' {
 }
 
 interface EditorProps {
-  initialValue?: Descendant[]
+  onChange: (value: Descendant[]) => void
+  value?: Descendant[]
   placeholder?: string
 }
 
-export const Editor: React.FC<EditorProps> = ({ initialValue = [], placeholder }) => {
-  const [value, setValue] = useState<Array<Descendant>>(initialValue)
+export const Editor: React.FC<EditorProps> = ({ onChange , value= [], placeholder }) => {
+
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
+
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const handleChange = useCallback((value) => {
+    const isAstChange = editor.operations.some(
+        op => 'set_selection' !== op.type
+    )
+    if (isAstChange) {
+      onChange?.(value)
+    }
+  }, [onChange])
+
+
+  useEffect(() => {
+    const point = { path: [0, 0], offset: 0 };
+    editor.selection = { anchor: point, focus: point };
+  }, [value])
+
+
+
 
   return (
-    <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+    <Slate editor={editor} value={value} onChange={handleChange}>
       <EditorToolbar />
       <Editable
         renderElement={renderElement}
