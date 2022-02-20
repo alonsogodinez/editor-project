@@ -1,6 +1,10 @@
+
 import Head from 'next/head'
 import type { AppProps } from 'next/app'
 import CssBaseline from '@mui/material/CssBaseline'
+
+// fixes compatibility with babel 6 for diff merge library
+import 'regenerator-runtime/runtime';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

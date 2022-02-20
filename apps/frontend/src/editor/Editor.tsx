@@ -1,12 +1,12 @@
 // @refresh reset // Fixes hot refresh errors in development https://github.com/ianstormtaylor/slate/issues/3477
 
-import React, {useCallback, useMemo} from 'react'
-import { createEditor, Descendant, BaseEditor} from 'slate'
-import { withHistory, HistoryEditor } from 'slate-history'
-import { handleHotkeys } from './helpers'
-import { withHtml } from './decorators'
+import React, {useCallback, useEffect, useState} from 'react'
 
-import { Editable, withReact, Slate, ReactEditor } from 'slate-react'
+import { BaseEditor, CustomTypes, Descendant} from 'slate'
+import { HistoryEditor } from 'slate-history'
+import { handleHotkeys } from './helpers'
+
+import { Editable, Slate, ReactEditor } from 'slate-react'
 import { EditorToolbar } from './EditorToolbar'
 import {CustomElement} from './CustomElement'
 import { CustomLeaf, CustomText } from './CustomLeaf'
@@ -22,25 +22,26 @@ declare module 'slate' {
 }
 
 interface EditorProps {
-  onChange: (value: Descendant[]) => void
-  value?: Descendant[]
+  editor: CustomTypes['Editor']
+  initialValue?: Descendant[]
   placeholder?: string
+  id: string
+  userId: string
 }
 
-export const Editor: React.FC<EditorProps> = ({ onChange , value= [], placeholder }) => {
+export const Editor: React.FC<EditorProps> = ({ editor,initialValue=[], id, placeholder }) => {
+  const [value, setValue] = useState<Descendant[]>(initialValue)
+
+  useEffect(() => {
+    editor.connect()
+    return editor.destroy
+  }, [])
+
 
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
 
-  const editor = useMemo(() => withHtml(withReact(withHistory(createEditor()))), [])
-  const handleChange = useCallback((value) => {
-    const isAstChange = editor.operations.some(
-        op => 'set_selection' !== op.type
-    )
-    if (isAstChange) {
-      onChange?.(value)
-    }
-  }, [onChange])
+  const handleChange = useCallback((value) => setValue(value), [setValue])
 
 
   return (
