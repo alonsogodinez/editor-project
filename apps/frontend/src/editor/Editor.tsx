@@ -1,13 +1,14 @@
 // @refresh reset // Fixes hot refresh errors in development https://github.com/ianstormtaylor/slate/issues/3477
 
-import React, {useCallback, useEffect, useMemo} from 'react'
-import { createEditor, Descendant, BaseEditor } from 'slate'
+import React, {useCallback, useMemo} from 'react'
+import { createEditor, Descendant, BaseEditor} from 'slate'
 import { withHistory, HistoryEditor } from 'slate-history'
 import { handleHotkeys } from './helpers'
+import { withHtml } from './decorators'
 
 import { Editable, withReact, Slate, ReactEditor } from 'slate-react'
 import { EditorToolbar } from './EditorToolbar'
-import { CustomElement } from './CustomElement'
+import {CustomElement} from './CustomElement'
 import { CustomLeaf, CustomText } from './CustomLeaf'
 
 // Slate suggests overwriting the module to include the ReactEditor, Custom Elements & Text
@@ -15,7 +16,7 @@ import { CustomLeaf, CustomText } from './CustomLeaf'
 declare module 'slate' {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor & HistoryEditor
-    Element: CustomElement
+    Element: CustomElement,
     Text: CustomText
   }
 }
@@ -31,7 +32,7 @@ export const Editor: React.FC<EditorProps> = ({ onChange , value= [], placeholde
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
   const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
 
-  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const editor = useMemo(() => withHtml(withReact(withHistory(createEditor()))), [])
   const handleChange = useCallback((value) => {
     const isAstChange = editor.operations.some(
         op => 'set_selection' !== op.type
@@ -42,16 +43,8 @@ export const Editor: React.FC<EditorProps> = ({ onChange , value= [], placeholde
   }, [onChange])
 
 
-  useEffect(() => {
-    const point = { path: [0, 0], offset: 0 };
-    editor.selection = { anchor: point, focus: point };
-  }, [value])
-
-
-
-
   return (
-    <Slate editor={editor} value={value} onChange={handleChange}>
+    <Slate editor={editor} value={value} onChange={handleChange} >
       <EditorToolbar />
       <Editable
         renderElement={renderElement}

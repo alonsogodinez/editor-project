@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {useCallback, useEffect} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import useSWR from 'swr'
 import { NotesResponse, NoteResponse } from 'backend/routes/notes'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -28,6 +28,7 @@ export const useNotesList = () => {
 export const useNote = (id: string) => {
   const { readyState, lastMessage, sendMessage } = useWebSocket(`ws://localhost:3001/api/notes/${id}`)
 
+  const [localNote, setLocalNote] = useState<NoteResponse>()
   // Send a message when ready on first load
   useEffect(() => {
     if (readyState === ReadyState.OPEN && lastMessage === null) {
@@ -35,20 +36,25 @@ export const useNote = (id: string) => {
     }
   }, [readyState, lastMessage])
 
-
-
  const note = lastMessage && JSON.parse(lastMessage.data) as NoteResponse
   const updateNote = useCallback((content : Descendant[]) => {
     const updatedNote = {
       ...note,
       content: [...content]
-    }
+    } as NoteResponse
+    setLocalNote(updatedNote)
     sendMessage(JSON.stringify(updatedNote))
   }, [note])
 
 
+  useEffect(() => {
+    if(lastMessage){
+      setLocalNote(JSON.parse(lastMessage.data) as NoteResponse)
+    }
+  }, [lastMessage])
+
   return {
-    note,
+    note: localNote,
     updateNote,
     readyState,
   }
