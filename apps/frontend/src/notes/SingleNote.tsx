@@ -3,7 +3,7 @@ import {Editor} from '../editor'
 import {useNote} from './hooks'
 import {v4} from 'uuid'
 
-import {Paper, TextField, Badge, BadgeTypeMap} from '@mui/material'
+import {Paper, TextField, Badge} from '@mui/material'
 import {withHtml} from "../editor/decorators";
 import {withReact} from "slate-react";
 import {withHistory} from "slate-history";
@@ -25,8 +25,9 @@ const Home: React.FC<SingleNoteProps> = ({id}) => {
         const options = {
             docId: '/' + id,
             cursorData: {
-                color: 'red',
-                // alphaColor: color.slice(0, -2) + '0.2)'
+                name: "Not You 😛",
+                color: '#6200ee',
+                alphaColor: 'rgba(255,0,0,0.5)',
             },
             url: `${origin}/${id}`,
             connectOpts: {

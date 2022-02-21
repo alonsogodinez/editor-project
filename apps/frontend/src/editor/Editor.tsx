@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import { BaseEditor, CustomTypes, Descendant} from 'slate'
 import { HistoryEditor } from 'slate-history'
 import { handleHotkeys } from './helpers'
+import {useCursor} from "@slate-collaborative/client";
 
 import { Editable, Slate, ReactEditor } from 'slate-react'
 import { EditorToolbar } from './EditorToolbar'
@@ -32,16 +33,20 @@ interface EditorProps {
 export const Editor: React.FC<EditorProps> = ({ editor,initialValue=[], id, placeholder }) => {
   const [value, setValue] = useState<Descendant[]>(initialValue)
 
+
+
   useEffect(() => {
     editor.connect()
     return editor.destroy
   }, [])
 
-
+  const { decorate } = useCursor(editor as any)
+  
   const renderElement = useCallback(props => <CustomElement {...props} />, [])
-  const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [])
+  const renderLeaf = useCallback(props => <CustomLeaf {...props} />, [decorate])
 
   const handleChange = useCallback((value) => setValue(value), [setValue])
+
 
 
   return (
@@ -52,6 +57,7 @@ export const Editor: React.FC<EditorProps> = ({ editor,initialValue=[], id, plac
         renderLeaf={renderLeaf}
         placeholder={placeholder}
         onKeyDown={handleHotkeys(editor)}
+        decorate={decorate as any}
 
         // The dev server injects extra values to the editr and the console complains
         // so we override them here to remove the message
