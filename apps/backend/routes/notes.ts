@@ -57,7 +57,6 @@ const noteHandler:RequestHandler = async (req, res) => {
 //         client.send(message )
 //       })
 //     } else if(req.params.id){
-//       console.log('alo', JSON.stringify(NOTE_1))
 //       console.log(req.params.id, typeof req.params.id)
 //       const note = await getNote(req.params.id)
 //       console.log({note})

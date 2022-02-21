@@ -1197,7 +1197,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@slate-collaborative/backend@^0.7.2":
+"@slate-collaborative/backend@0.7.2":
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@slate-collaborative/backend/-/backend-0.7.2.tgz#d9cc4b3ac45307dbfd9b07e35596ab83a6fa09ea"
   integrity sha512-MslbwK51aVTMgkglakdpD5vEiuBQD670/l6YySjpj2pIq3rYY09nIz4+aPVtL8lYtTu+Jl+H5XLF/imX7DxiUg==
@@ -1222,7 +1222,7 @@
     slate "0.59.0"
     typescript "^3.8.3"
 
-"@slate-collaborative/client@^0.7.2":
+"@slate-collaborative/client@0.7.2":
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@slate-collaborative/client/-/client-0.7.2.tgz#49b10fc8360688d38b8543db9dc285176a1ed2c1"
   integrity sha512-lQ6k2AczWt/SKaxJ+bY1X3tfm7R6G+yivnJqRyXpUSmR/nksQ6+22HSbS8W+sYroKKaNm1BPV/wyn5aeEP3PQg==
@@ -3786,6 +3786,11 @@ firebase-admin@^10.0.0:
   optionalDependencies:
     "@google-cloud/firestore" "^4.5.0"
     "@google-cloud/storage" "^5.3.0"
+
+firestore-jest-mock@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/firestore-jest-mock/-/firestore-jest-mock-0.17.0.tgz#87380c604024021247c2aa32c852964d6b08fce0"
+  integrity sha512-LA2c6BDkqL6gu72tTeBnfrVuPtgiEDfyAY745I0PAyP1DI3+ciFsy8psmfGtkU6K9NR1Tj6jsal0c5BFi01IEQ==
 
 flat-cache@^3.0.4:
   version "3.0.4"
